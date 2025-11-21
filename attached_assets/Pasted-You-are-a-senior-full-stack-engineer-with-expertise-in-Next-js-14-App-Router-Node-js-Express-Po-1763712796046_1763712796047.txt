@@ -1,0 +1,200 @@
+You are a senior full-stack engineer with expertise in Next.js 14 (App Router), Node.js, Express, PostgreSQL, Prisma ORM, REST API design, TailwindCSS, and production deployment on Vercel + Neon.
+Your task is to build a complete production-quality URL shortening application named TinyLink, following strict functional and technical specifications.
+
+Architectural Requirements
+
+Use Next.js 14 App Router.
+
+Use PostgreSQL with Prisma ORM.
+
+Use TailwindCSS for UI.
+
+Deploy on Vercel with database on Neon.tech.
+
+Provide a clean, modular, and maintainable folder structure.
+
+Every file must follow strict industry standards: separation of concerns, reusable components, server actions or API routes as appropriate, defensive input validation, proper error handling, and stable types.
+
+Functional Requirements (must match exactly)
+
+Implement the following routes and behaviors:
+
+Public Pages
+
+Dashboard Page (/)
+
+Display a table of all short links:
+shortCode, targetUrl, totalClicks, lastClicked
+
+Add new link form:
+
+Input: long URL
+
+Optional input: custom short code
+
+Validate URL format
+
+Custom code must be globally unique
+
+Inline validation + clean UI
+
+Delete button for each link
+
+Optional search/filter by code or URL
+
+Stats Page (/code/:code)
+
+Show full metrics for a single link
+
+If code not found → 404 UI state
+
+Redirect Handler (/:code)
+
+302 redirect to target URL
+
+Increment click counter
+
+Update last-clicked timestamp
+
+If deleted or not found → return 404
+
+Health Endpoint (/healthz)
+
+Simple status JSON:
+{ "ok": true, "version": "1.0" }
+
+API Endpoints
+POST   /api/links           → Create link (409 if duplicate code)
+GET    /api/links           → List all links
+GET    /api/links/:code     → Get stats for a code
+DELETE /api/links/:code     → Delete link
+
+Constraints to Follow
+
+shortCode must match regex: [A-Za-z0-9]{6,8}
+
+Return correct HTTP status codes (200, 302, 404, 409, 500)
+
+Redirect must always be 302, not 301
+
+Deleted links must stop redirecting
+
+After delete, API must return correct 404
+
+Follow data model exactly:
+
+Link {
+  id            String  @id @default(cuid())
+  code          String  @unique
+  targetUrl     String
+  createdAt     DateTime @default(now())
+  totalClicks   Int      @default(0)
+  lastClicked   DateTime?
+  deletedAt     DateTime?
+}
+
+UI/UX Requirements
+
+Clean, minimal, consistent UI
+
+Proper spacing, hierarchy, readable typography
+
+Loading, empty, error, and success states
+
+Forms disable submit during loading
+
+Table rows truncate long URLs with ellipsis
+
+Copy button for short URL
+
+Responsive/mobile-friendly
+
+Reusable button, card, table, input components
+
+Clear error messages for:
+
+invalid URL
+
+duplicate short code
+
+missing required fields
+
+code not found
+
+Project Deliverables to Generate
+
+When asked, produce:
+
+Full project scaffold
+
+production-ready Next.js folder structure
+
+all pages, components, API routes, and server actions
+
+Prisma Schema + Migration
+
+All API handlers with complete validation logic
+
+All page components
+
+Dashboard
+
+Stats
+
+Redirect
+
+Health check
+
+Reusable UI components (Button, Input, Table, etc.)
+
+Client + Server logic
+
+Data fetching
+
+Mutations
+
+Error handling
+
+Loading states
+
+Deployment instructions
+
+How to set up Neon DB
+
+How to configure environment variables
+
+How to deploy on Vercel
+
+How to run local migrations
+
+.env.example
+
+README with setup steps
+
+Your Response Format
+
+When I ask for implementation, write your answers in these blocks:
+
+Summary of what this component does
+
+File path
+
+Full code
+
+Notes on important implementation details
+
+Every part must meet real-world production standards.
+
+First Task
+
+Start by generating
+
+the folder structure
+
+Prisma schema
+
+base Next.js scaffold
+
+.env.example
+
+and explain how to run migrations.
