@@ -1,9 +1,10 @@
+import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
 import { type Server } from "node:http";
 
 import { nanoid } from "nanoid";
-import { type Express } from "express";
+import express, { type Express } from "express";
 import { createServer as createViteServer, createLogger } from "vite";
 
 import viteConfig from "../vite.config";
@@ -31,9 +32,23 @@ export async function setupVite(app: Express, server: Server) {
     appType: "custom",
   });
 
+  // Serve static files from client/public directory
+  const publicDir = path.resolve(import.meta.dirname, "..", "client", "public");
+  app.use(express.static(publicDir));
+
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
+
+    // Skip serving HTML for API routes, Vite internals, and static files
+    if (
+      url.startsWith("/api") ||
+      url.startsWith("/@") ||  // Vite internal routes
+      url.startsWith("/src") || // Source files
+      url.match(/\.(png|jpg|jpeg|gif|svg|ico|css|js|json|woff|woff2|ttf|eot)$/)
+    ) {
+      return next();
+    }
 
     try {
       const clientTemplate = path.resolve(

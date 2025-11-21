@@ -118,12 +118,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/:code", async (req, res) => {
+  app.get("/:code", async (req, res, next) => {
     try {
       const { code } = req.params;
 
-      if (code === "healthz" || code.startsWith("api") || code === "code") {
-        return;
+      // Skip if it's a reserved route, Vite internal route, or has a file extension
+      if (
+        code === "healthz" ||
+        code.startsWith("api") ||
+        code === "code" ||
+        code.startsWith("@") ||  // Vite internal routes like @react-refresh, @vite
+        code.startsWith("src") || // Source files
+        code.includes(".")  // Files with extensions
+      ) {
+        return next();
       }
 
       const link = await storage.getLinkByCode(code);
